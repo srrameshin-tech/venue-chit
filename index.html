@@ -1,1 +1,738 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<title>வெண்ணு சிட்டு</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --blue:#1d4ed8;--blue2:#2563eb;--blue3:#eff6ff;
+  --green:#059669;--green2:#dcfce7;
+  --red:#ef4444;--red2:#fef2f2;
+  --gold:#f59e0b;--gold2:#fef3c7;
+  --gray:#f1f5f9;--gray2:#e2e8f0;--gray3:#94a3b8;
+  --text:#0f172a;--text2:#475569;
+}
+body{font-family:'Noto Sans Tamil',system-ui,sans-serif;background:var(--gray);max-width:480px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;color:var(--text)}
+/* HEADER */
+#header{background:linear-gradient(135deg,#0f2952,#1d4ed8);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 2px 16px rgba(0,0,0,.25);position:sticky;top:0;z-index:100}
+.h-left{display:flex;align-items:center;gap:10}
+.h-logo{font-size:26px}
+.h-title{font-size:17px;font-weight:900;letter-spacing:.3px}
+.h-sub{font-size:9px;opacity:.6;letter-spacing:2px}
+.month-badge{background:rgba(255,255,255,.15);border-radius:10px;padding:5px 12px;text-align:center;cursor:pointer}
+.month-badge select{background:transparent;border:none;color:#fff;font-size:17px;font-weight:900;cursor:pointer;outline:none;font-family:inherit}
+.month-badge .mb-lbl{font-size:9px;opacity:.7}
+/* BODY */
+#body{flex:1;overflow-y:auto;padding-bottom:70px}
+.page{padding:12px 12px 16px;display:none}
+.page.active{display:block}
+/* NAV */
+#nav{display:flex;background:#fff;border-top:1px solid var(--gray2);position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:100;box-shadow:0 -2px 10px rgba(0,0,0,.07)}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 2px;background:transparent;border:none;cursor:pointer;color:var(--gray3);font-family:inherit;transition:color .2s}
+.nav-btn.active{color:var(--blue2)}
+.nav-btn span:first-child{font-size:18px}
+.nav-btn span:last-child{font-size:9px;margin-top:1px;font-weight:600}
+/* CARDS */
+.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.section-title{font-size:13px;font-weight:800;color:var(--text2);margin:4px 0 8px}
+/* COUNTDOWN */
+.countdown{border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.stat-card{background:#fff;border-radius:12px;padding:12px 10px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.stat-icon{font-size:20px}
+.stat-lbl{font-size:10px;color:var(--gray3);margin-top:2px}
+.stat-val{font-size:14px;font-weight:800;margin-top:3px}
+/* MEMBER ROW */
+.mem-row{display:flex;align-items:center;background:#fff;border-radius:12px;padding:11px 12px;margin-bottom:7px;box-shadow:0 1px 3px rgba(0,0,0,.07);border-left:4px solid transparent}
+.mem-row.paid{border-left-color:var(--green)}
+.mem-row.pending{border-left-color:var(--red)}
+.mem-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;margin-right:10px;flex-shrink:0}
+.mem-name{font-weight:700;font-size:13px}
+.mem-sub{font-size:11px;color:var(--gray3)}
+.mem-sub.paid-lbl{color:var(--green)}
+.btn{border:none;border-radius:9px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-pay{background:var(--blue2);color:#fff}
+.btn-undo{background:var(--gray);color:var(--gray3)}
+.btn-full{width:100%;padding:12px;font-size:14px;border-radius:11px}
+.btn-green{background:var(--green);color:#fff}
+.btn-gold{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+.btn-wa{background:#25d366;color:#fff;padding:7px 12px;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;flex-shrink:0}
+/* FILTER TABS */
+.ftabs{display:flex;gap:6px;margin-bottom:12px}
+.ftab{flex:1;padding:8px 4px;border-radius:9px;border:1.5px solid var(--gray2);background:#fff;color:var(--gray3);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
+.ftab.active{border-color:var(--blue2);background:var(--blue3);color:var(--blue2)}
+/* SELECT */
+.sel{width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--gray2);font-size:12px;background:#f9fafb;outline:none;font-family:inherit;margin-bottom:8px}
+/* PROGRESS */
+.prog-bar{height:6px;background:var(--gray2);border-radius:3px;overflow:hidden;margin:4px 0 2px}
+.prog-fill{height:100%;border-radius:3px;transition:width .4s}
+/* SCHEDULE TABLE */
+.sched{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.sched-row{display:flex;align-items:center;padding:9px 12px;border-bottom:1px solid #f8fafc;cursor:pointer}
+.sched-row:last-child{border-bottom:none}
+.sched-row.cur{background:var(--blue3)}
+.sched-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-right:10px;flex-shrink:0}
+/* STATUS GRID */
+.sgrid{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.sgrid-head{display:grid;grid-template-columns:2fr 1fr repeat(11,1fr);background:#0f2952;color:#fff}
+.sgrid-head div,.sgrid-cell{padding:5px 3px;font-size:9px;font-weight:700;text-align:center;border-right:1px solid rgba(255,255,255,.1)}
+.sgrid-row{display:grid;grid-template-columns:2fr 1fr repeat(11,1fr);border-bottom:1px solid #f3f4f6}
+.sgrid-cell{font-size:10px;padding:6px 3px;display:flex;align-items:center;justify-content:center}
+.sgrid-cell.paid{background:#dcfce7;color:#059669;font-weight:800}
+.sgrid-cell.pend{background:#fef2f2;color:#ef4444}
+/* WINNER CARD */
+.win-row{display:flex;align-items:center;background:#fff;border-radius:12px;padding:11px 12px;margin-bottom:6px;box-shadow:0 1px 3px rgba(0,0,0,.07);border-left:4px solid var(--gray2)}
+.win-row.has-winner{background:var(--gold2);border-left-color:var(--gold)}
+/* MSG BOX */
+.msg-box{background:#f9fafb;border-radius:10px;padding:12px;font-size:12px;color:var(--text);white-space:pre-wrap;line-height:1.7;max-height:160px;overflow-y:auto;margin-bottom:8px}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:999;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal-box{background:#fff;border-radius:18px;width:100%;max-width:340px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.3);transform:scale(.92);transition:transform .2s}
+.modal-overlay.show .modal-box{transform:scale(1)}
+/* RECEIPT */
+.rcpt-head{background:linear-gradient(135deg,#0f2952,#1d4ed8);color:#fff;padding:20px 20px 16px;text-align:center}
+.rcpt-body{padding:16px 20px}
+.rcpt-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed #f3f4f6}
+.rcpt-lbl{font-size:12px;color:var(--gray3)}
+.rcpt-val{font-size:13px;font-weight:600;color:var(--text)}
+.rcpt-val.big{font-size:17px;font-weight:900;color:var(--green)}
+.rcpt-foot{padding:0 20px 20px;text-align:center}
+/* WINNER MODAL */
+.wm-box{background:linear-gradient(135deg,#fef3c7,#fde68a);border:3px solid var(--gold);border-radius:20px;padding:28px 24px;width:100%;max-width:320px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.3)}
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.page.active>*{animation:fadeIn .25s ease both}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.pulse{animation:pulse 2s infinite}
+/* SCROLLBAR */
+#body::-webkit-scrollbar{width:4px}
+#body::-webkit-scrollbar-thumb{background:var(--gray2);border-radius:2px}
+/* TOAST */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:9px 20px;border-radius:30px;font-size:12px;font-weight:600;z-index:9999;opacity:0;transition:opacity .3s;white-space:nowrap}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div class="h-left">
+    <span class="h-logo">🏦</span>
+    <div>
+      <div class="h-title">வெண்ணு சிட்டு</div>
+      <div class="h-sub">VENUE CHIT FUND</div>
+    </div>
+  </div>
+  <div class="month-badge">
+    <div class="mb-lbl">மாதம்</div>
+    <select id="monthSel" onchange="setMonth(this.value)">
+      <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+      <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+      <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+      <option value="10">10</option><option value="11">11</option>
+    </select>
+  </div>
+</div>
+
+<!-- BODY -->
+<div id="body">
+
+  <!-- HOME PAGE -->
+  <div class="page active" id="page-home">
+    <div id="countdownBanner" class="countdown"></div>
+    <div class="stat-grid" id="statsGrid"></div>
+    <div class="section-title">குழு நிலை</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px" id="groupBars"></div>
+    <div id="winnerThisMonth"></div>
+    <div class="section-title">📅 11 மாத அட்டவணை</div>
+    <div class="sched" id="schedTable"></div>
+  </div>
+
+  <!-- PAYMENTS PAGE -->
+  <div class="page" id="page-pay">
+    <div class="card" style="background:#eff6ff;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:13px;color:#1e40af;font-weight:600" id="payMonthLabel"></span>
+      <span style="font-size:17px;font-weight:900;color:#1e40af" id="payInstalment"></span>
+    </div>
+    <div class="ftabs">
+      <button class="ftab active" onclick="setFilter('ALL',this)">அனைவரும்</button>
+      <button class="ftab" onclick="setFilter('1',this)">குழு 1</button>
+      <button class="ftab" onclick="setFilter('2',this)">குழு 2</button>
+    </div>
+    <div id="payList"></div>
+  </div>
+
+  <!-- STATUS PAGE -->
+  <div class="page" id="page-stat">
+    <div class="section-title">📊 அனைத்து உறுப்பினர் நிலை</div>
+    <div id="memberProgress"></div>
+    <div class="section-title" style="margin-top:8px">📋 மாதவாரி அட்டவணை</div>
+    <div style="overflow-x:auto">
+      <div class="sgrid" id="statusGrid"></div>
+    </div>
+  </div>
+
+  <!-- WINNERS PAGE -->
+  <div class="page" id="page-win">
+    <div class="card">
+      <div class="section-title">🏆 வெற்றியாளர் அறிவி</div>
+      <select class="sel" id="winMonSel">
+        <option value="">மாதம் தேர்வு</option>
+      </select>
+      <select class="sel" id="winMemSel">
+        <option value="">உறுப்பினர் தேர்வு</option>
+      </select>
+      <button class="btn btn-gold btn-full" onclick="announceWinner()">🏆 வெற்றியாளர் அறிவி!</button>
+    </div>
+    <div class="section-title">அனைத்து மாத வெற்றியாளர்கள்</div>
+    <div id="winnersList"></div>
+  </div>
+
+  <!-- REMINDER PAGE -->
+  <div class="page" id="page-rem">
+    <div id="bigCountdown" class="card" style="text-align:center;padding:22px 16px"></div>
+    <div class="ftabs" style="margin-top:4px">
+      <button class="ftab active" id="remTab1" onclick="setRemTab('general',this)">பொது</button>
+      <button class="ftab" id="remTab2" onclick="setRemTab('pending',this)">நிலுவை</button>
+      <button class="ftab" id="remTab3" onclick="setRemTab('final',this)">கடைசி</button>
+    </div>
+    <div class="card">
+      <div class="section-title" id="remMsgTitle">📢 பொது நினைவூட்டல்</div>
+      <div class="msg-box" id="remMsgBox"></div>
+      <button class="btn btn-green btn-full" onclick="copyMsg()">📋 நகலெடு (WhatsApp)</button>
+    </div>
+    <div id="pendingRemList"></div>
+  </div>
+
+</div><!-- /body -->
+
+<!-- NAV -->
+<div id="nav">
+  <button class="nav-btn active" onclick="showPage('home',this)"><span>🏠</span><span>முகப்பு</span></button>
+  <button class="nav-btn" onclick="showPage('pay',this)"><span>💰</span><span>பணம்</span></button>
+  <button class="nav-btn" onclick="showPage('stat',this)"><span>📊</span><span>நிலை</span></button>
+  <button class="nav-btn" onclick="showPage('win',this)"><span>🏆</span><span>பரிசு</span></button>
+  <button class="nav-btn" onclick="showPage('rem',this)"><span>🔔</span><span>ஞாபகம்</span></button>
+</div>
+
+<!-- RECEIPT MODAL -->
+<div class="modal-overlay" id="receiptModal" onclick="closeModal('receiptModal')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="rcpt-head">
+      <div style="font-size:34px">🏦</div>
+      <div style="font-size:19px;font-weight:900;margin-top:4px">வெண்ணு சிட்டு</div>
+      <div style="font-size:9px;opacity:.65;letter-spacing:2px">PAYMENT RECEIPT</div>
+    </div>
+    <div class="rcpt-body" id="rcptBody"></div>
+    <div class="rcpt-foot">
+      <div style="font-size:13px;color:#059669;font-weight:700;margin-bottom:12px">✅ பணம் பெறப்பட்டது — நன்றி 🙏</div>
+      <button class="btn btn-pay btn-full" onclick="closeModal('receiptModal')">மூடு</button>
+    </div>
+  </div>
+</div>
+
+<!-- WINNER MODAL -->
+<div class="modal-overlay" id="winnerModal" onclick="closeModal('winnerModal')">
+  <div style="display:flex;align-items:center;justify-content:center;width:100%;max-width:340px" onclick="event.stopPropagation()">
+    <div class="wm-box" id="wmBox"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+// ── FIREBASE CONFIG ────────────────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyBVGVu59jDZybPFAX_pRisSrQRoXHQ0EWY",
+  authDomain: "kmbsc-chit.firebaseapp.com",
+  databaseURL: "https://kmbsc-chit-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "kmbsc-chit",
+  storageBucket: "kmbsc-chit.firebasestorage.app",
+  messagingSenderId: "511325458985",
+  appId: "1:511325458985:web:a7597bcf0f89b71405c238"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+
+// ── DATA ───────────────────────────────────────────────────────────────────
+const MONTHS = [
+  {m:1, label:"மாதம் 1",  inst:10000, prize:100000, temple:true},
+  {m:2, label:"மாதம் 2",  inst:7500,  prize:73000},
+  {m:3, label:"மாதம் 3",  inst:7600,  prize:74000},
+  {m:4, label:"மாதம் 4",  inst:7700,  prize:75000},
+  {m:5, label:"மாதம் 5",  inst:7800,  prize:77000},
+  {m:6, label:"மாதம் 6",  inst:8000,  prize:81000},
+  {m:7, label:"மாதம் 7",  inst:8200,  prize:84000},
+  {m:8, label:"மாதம் 8",  inst:8400,  prize:85000},
+  {m:9, label:"மாதம் 9",  inst:8500,  prize:88000},
+  {m:10,label:"மாதம் 10", inst:9300,  prize:95000},
+  {m:11,label:"மாதம் 11", inst:10000, prize:98000},
+];
+
+const MEMBERS = [
+  // GROUP 1
+  {id:1,  name:"Giri",               group:"1"},
+  {id:2,  name:"Usha / Priya Akka",  group:"1"},
+  {id:3,  name:"Selvi Ramesh",        group:"1"},
+  {id:4,  name:"Gowri Chithi",        group:"1"},
+  {id:5,  name:"Dhayalan Chithappa",  group:"1"},
+  // GROUP 2
+  {id:6,  name:"Suveendharan",        group:"2"},
+  {id:7,  name:"Susi MA",             group:"2"},
+  {id:8,  name:"Vasanth",             group:"2"},
+  {id:9,  name:"Arun Keerthana",      group:"2"},
+  {id:10, name:"Bala Coimbatore",     group:"2"},
+];
+
+// STATE
+let curMonth   = 1;
+let payments   = {}; // {memberId_month: {date,amt}}
+let winners    = {}; // {month: {name,mid,grp}}
+let rcCounter  = 1;
+let filterGrp  = "ALL";
+let remTab     = "general";
+
+const INR = n => "₹" + Number(n).toLocaleString("en-IN");
+const md  = () => MONTHS[curMonth-1];
+const today = () => new Date().toLocaleDateString("ta-IN");
+
+// ── FIREBASE SYNC ──────────────────────────────────────────────────────────
+function fbSet(path, val) { return set(ref(db, "venue_chit/" + path), val); }
+function fbGet(path)      { return get(ref(db, "venue_chit/" + path)); }
+
+// Load all data from Firebase
+async function loadFromFirebase() {
+  try {
+    const snap = await fbGet("");
+    if (snap.exists()) {
+      const d = snap.val();
+      payments  = d.payments  || {};
+      winners   = d.winners   || {};
+      rcCounter = d.rcCounter || 1;
+      curMonth  = d.curMonth  || 1;
+    }
+  } catch(e) { console.log("Firebase load error:", e); }
+  document.getElementById("monthSel").value = curMonth;
+  renderAll();
+}
+
+// Listen for realtime changes
+onValue(ref(db, "venue_chit"), snap => {
+  if (snap.exists()) {
+    const d = snap.val();
+    payments  = d.payments  || {};
+    winners   = d.winners   || {};
+    rcCounter = d.rcCounter || 1;
+    renderAll();
+  }
+});
+
+async function saveAll() {
+  try {
+    await fbSet("payments",  payments);
+    await fbSet("winners",   winners);
+    await fbSet("rcCounter", rcCounter);
+    await fbSet("curMonth",  curMonth);
+  } catch(e) { console.log("Firebase save error:", e); }
+}
+
+// ── MONTH ──────────────────────────────────────────────────────────────────
+window.setMonth = function(v) {
+  curMonth = parseInt(v);
+  saveAll();
+  renderAll();
+};
+
+// ── FILTER ────────────────────────────────────────────────────────────────
+window.setFilter = function(g, el) {
+  filterGrp = g;
+  document.querySelectorAll(".ftab").forEach(b => b.classList.remove("active"));
+  el.classList.add("active");
+  renderPayments();
+};
+
+// ── MARK PAID ────────────────────────────────────────────────────────────
+window.markPaid = function(mid) {
+  const mem = MEMBERS.find(m => m.id === mid);
+  const mdata = md();
+  const key = `${mid}_${curMonth}`;
+  payments[key] = { date: today(), amt: mdata.inst, name: mem.name };
+  const rc = rcCounter++;
+  saveAll();
+  renderAll();
+  showReceipt({ id:rc, name:mem.name, grp:"குழு "+mem.group, mlabel:mdata.label, date:today(), amt:mdata.inst });
+};
+
+window.markUnpaid = function(mid) {
+  const key = `${mid}_${curMonth}`;
+  delete payments[key];
+  saveAll();
+  renderAll();
+};
+
+// ── WINNER ───────────────────────────────────────────────────────────────
+window.announceWinner = function() {
+  const mid = parseInt(document.getElementById("winMemSel").value);
+  const mon = parseInt(document.getElementById("winMonSel").value);
+  if (!mid || !mon) { toast("மாதம் & உறுப்பினர் தேர்வு செய்யவும்!"); return; }
+  const mem   = MEMBERS.find(m => m.id === mid);
+  const mdata = MONTHS[mon-1];
+  winners[mon] = { mid, name: mem.name, grp: mem.group };
+  saveAll();
+  renderAll();
+  showWinnerModal({ name: mem.name, grp: mem.group, mlabel: mdata.label, prize: mdata.prize });
+  document.getElementById("winMonSel").value = "";
+  document.getElementById("winMemSel").value = "";
+};
+
+// ── REMINDER ─────────────────────────────────────────────────────────────
+window.setRemTab = function(t, el) {
+  remTab = t;
+  document.querySelectorAll("#page-rem .ftab").forEach(b=>b.classList.remove("active"));
+  el.classList.add("active");
+  renderReminder();
+};
+
+window.copyMsg = function() {
+  const txt = document.getElementById("remMsgBox").textContent;
+  navigator.clipboard.writeText(txt).then(()=>toast("✅ நகலெடுக்கப்பட்டது!"));
+};
+
+// ── MODAL ─────────────────────────────────────────────────────────────────
+function showModal(id) { document.getElementById(id).classList.add("show"); }
+window.closeModal = function(id) { document.getElementById(id).classList.remove("show"); };
+
+function showReceipt(r) {
+  document.getElementById("rcptBody").innerHTML = `
+    <div class="rcpt-row"><span class="rcpt-lbl">ரசீது எண்</span><span class="rcpt-val">RC-${String(r.id).padStart(4,"0")}</span></div>
+    <div class="rcpt-row"><span class="rcpt-lbl">உறுப்பினர்</span><span class="rcpt-val">${r.name}</span></div>
+    <div class="rcpt-row"><span class="rcpt-lbl">குழு</span><span class="rcpt-val">${r.grp}</span></div>
+    <div class="rcpt-row"><span class="rcpt-lbl">மாதம்</span><span class="rcpt-val">${r.mlabel}</span></div>
+    <div class="rcpt-row"><span class="rcpt-lbl">தேதி</span><span class="rcpt-val">${r.date}</span></div>
+    <div class="rcpt-row"><span class="rcpt-lbl">தொகை</span><span class="rcpt-val big">${INR(r.amt)}</span></div>
+  `;
+  showModal("receiptModal");
+}
+
+function showWinnerModal(w) {
+  document.getElementById("wmBox").innerHTML = `
+    <div style="font-size:56px">🏆</div>
+    <div style="font-size:13px;font-weight:700;color:#92400e;margin-top:6px">பரிசு வென்றவர்!</div>
+    <div style="font-size:26px;font-weight:900;color:#78350f;margin:10px 0">${w.name}</div>
+    <div style="background:rgba(255,255,255,.7);border-radius:12px;padding:12px 16px;margin:12px 0">
+      <div style="font-size:11px;color:#92400e">${w.mlabel} — பரிசுத் தொகை</div>
+      <div style="font-size:34px;font-weight:900;color:#059669">${INR(w.prize)}</div>
+    </div>
+    <div style="font-size:12px;color:#92400e;margin-bottom:14px">குழு: ${w.grp}</div>
+    <button class="btn btn-gold btn-full" onclick="closeModal('winnerModal')">வாழ்த்துக்கள்! 🎉</button>
+  `;
+  showModal("winnerModal");
+}
+
+window.openWinnerModal = function(mon) {
+  if (!winners[mon]) return;
+  const w = winners[mon];
+  const mdata = MONTHS[mon-1];
+  showWinnerModal({ name:w.name, grp:w.grp, mlabel:mdata.label, prize:mdata.prize });
+};
+
+// ── COUNTDOWN ────────────────────────────────────────────────────────────
+function daysLeft() {
+  const now = new Date();
+  let t = new Date(now.getFullYear(), now.getMonth(), 5);
+  if (t <= now) t.setMonth(t.getMonth()+1);
+  return Math.ceil((t-now)/86400000);
+}
+
+// ── TOAST ────────────────────────────────────────────────────────────────
+function toast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"), 2500);
+}
+
+// ── PAGE NAV ──────────────────────────────────────────────────────────────
+window.showPage = function(name, btn) {
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById("page-"+name).classList.add("active");
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  if (name==="pay")  renderPayments();
+  if (name==="stat") renderStatus();
+  if (name==="win")  renderWinners();
+  if (name==="rem")  renderReminder();
+};
+
+// ── RENDER ALL ────────────────────────────────────────────────────────────
+function renderAll() {
+  renderHome();
+  const active = document.querySelector(".page.active");
+  if (active) {
+    const id = active.id;
+    if (id==="page-pay")  renderPayments();
+    if (id==="page-stat") renderStatus();
+    if (id==="page-win")  renderWinners();
+    if (id==="page-rem")  renderReminder();
+  }
+}
+
+// ── RENDER HOME ───────────────────────────────────────────────────────────
+function renderHome() {
+  const mdata = md();
+  const dl    = daysLeft();
+  const urgent= dl<=1, warn=dl<=5;
+  const paidAll = MEMBERS.filter(m=>payments[`${m.id}_${curMonth}`]).length;
+  const pendAll = MEMBERS.length - paidAll;
+  const collected = MEMBERS.filter(m=>payments[`${m.id}_${curMonth}`]).length * mdata.inst;
+
+  // Countdown
+  document.getElementById("countdownBanner").innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;background:${urgent?"#fef2f2":warn?"#fffbeb":"#ecfdf5"};border-radius:14px;padding:14px 16px">
+      <div style="font-size:30px">${urgent?"🚨":warn?"⏰":"📅"}</div>
+      <div style="flex:1">
+        <div style="font-weight:800;font-size:15px;color:${urgent?"#dc2626":warn?"#d97706":"#065f46"}">${urgent?"இன்று கடைசி நாள்!":dl+" நாட்கள் மீதம்"}</div>
+        <div style="font-size:11px;color:#6b7280">5ஆம் தேதி கட்டாயம் செலுத்தவும்</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:10px;color:#6b7280">தவணை</div>
+        <div style="font-size:15px;font-weight:900;color:#1e3a5f">${INR(mdata.inst)}</div>
+      </div>
+    </div>`;
+
+  // Stats
+  document.getElementById("statsGrid").innerHTML = [
+    ["💵","மாத தவணை",INR(mdata.inst),"#3b82f6"],
+    ["🏆","பரிசு",INR(mdata.prize),"#f59e0b"],
+    ["✅","செலுத்தியவர்",`${paidAll}/10`,"#059669"],
+    ["⏳","நிலுவை",`${pendAll} பேர்`,"#ef4444"],
+  ].map(([ic,lb,vl,cl])=>`
+    <div class="stat-card">
+      <div class="stat-icon">${ic}</div>
+      <div class="stat-lbl">${lb}</div>
+      <div class="stat-val" style="color:${cl}">${vl}</div>
+    </div>`).join("");
+
+  // Group bars
+  document.getElementById("groupBars").innerHTML = ["1","2"].map(g=>{
+    const tot=MEMBERS.filter(m=>m.group===g).length;
+    const pc=MEMBERS.filter(m=>m.group===g&&payments[`${m.id}_${curMonth}`]).length;
+    const pct=Math.round(pc/tot*100);
+    return `<div class="card" style="flex:1;padding:12px">
+      <div style="font-weight:700;font-size:13px;margin-bottom:4px">குழு ${g}</div>
+      <div style="font-size:11px;color:#6b7280;margin-bottom:5px">${pc}/${tot} பேர்</div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${pct===100?"#059669":"#3b82f6"}"></div></div>
+      <div style="font-size:12px;font-weight:700;color:${pct===100?"#059669":"#3b82f6"};margin-top:2px">${pct}%</div>
+    </div>`;
+  }).join("");
+
+  // Winner this month
+  const wtm = document.getElementById("winnerThisMonth");
+  if (winners[curMonth]) {
+    const w = winners[curMonth];
+    wtm.innerHTML = `
+      <div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:12px;box-shadow:0 2px 8px rgba(245,158,11,.15);cursor:pointer" onclick="openWinnerModal(${curMonth})">
+        <span style="font-size:28px">🏆</span>
+        <div>
+          <div style="font-size:12px;color:#92400e;font-weight:600">${mdata.label} பரிசு வென்றவர்</div>
+          <div style="font-size:17px;font-weight:900;color:#78350f">${w.name}</div>
+          <div style="font-size:13px;font-weight:700;color:#059669">${INR(mdata.prize)}</div>
+        </div>
+      </div>`;
+  } else if (mdata.temple) {
+    wtm.innerHTML = `
+      <div style="background:linear-gradient(135deg,#fce7f3,#fbcfe8);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <span style="font-size:28px">🛕</span>
+        <div>
+          <div style="font-size:12px;color:#9d174d;font-weight:600">${mdata.label} — கோவில் பங்கு</div>
+          <div style="font-size:15px;font-weight:900;color:#831843">Default: கோவிலுக்கு</div>
+          <div style="font-size:13px;font-weight:700;color:#059669">${INR(mdata.prize)}</div>
+        </div>
+      </div>`;
+  } else {
+    wtm.innerHTML = "";
+  }
+
+  // Schedule
+  document.getElementById("schedTable").innerHTML = MONTHS.map((m,i)=>`
+    <div class="sched-row ${m.m===curMonth?"cur":""}" onclick="setMonth(${m.m});document.getElementById('monthSel').value=${m.m}">
+      <div class="sched-num" style="background:${m.m===curMonth?"#2563eb":"#f3f4f6"};color:${m.m===curMonth?"#fff":"#9ca3af"}">${m.m}</div>
+      <div style="flex:1">
+        <div style="font-size:12px;font-weight:600">${m.label}${m.temple?" 🛕":""}</div>
+        <div style="font-size:10px;color:#9ca3af">${INR(m.inst)}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:12px;font-weight:700;color:#059669">${INR(m.prize)}</div>
+        ${winners[m.m]?`<div style="font-size:9px;color:#f59e0b">🏆${winners[m.m].name}</div>`:m.temple?`<div style="font-size:9px;color:#db2777">🛕 கோவில்</div>`:""}
+      </div>
+    </div>`).join("");
+}
+
+// ── RENDER PAYMENTS ────────────────────────────────────────────────────────
+function renderPayments() {
+  const mdata = md();
+  document.getElementById("payMonthLabel").textContent = mdata.label + " தவணை";
+  document.getElementById("payInstalment").textContent = INR(mdata.inst);
+  const list = filterGrp==="ALL" ? MEMBERS : MEMBERS.filter(m=>m.group===filterGrp);
+  document.getElementById("payList").innerHTML = list.map(m=>{
+    const p = payments[`${m.id}_${curMonth}`];
+    return `
+      <div class="mem-row ${p?"paid":"pending"}">
+        <div class="mem-avatar">${m.name[0]}</div>
+        <div style="flex:1">
+          <div class="mem-name">${m.name}</div>
+          <div class="mem-sub">குழு ${m.group}${p?` • ${p.date}`:""}</div>
+          ${p?`<div class="mem-sub paid-lbl">✅ பெறப்பட்டது</div>`:""}
+        </div>
+        ${p
+          ? `<button class="btn btn-undo" onclick="markUnpaid(${m.id})">↩ திரும்ப</button>`
+          : `<button class="btn btn-pay" onclick="markPaid(${m.id})">பெற்றேன் ✓</button>`
+        }
+      </div>`;
+  }).join("");
+}
+
+// ── RENDER STATUS ──────────────────────────────────────────────────────────
+function renderStatus() {
+  // Member progress cards
+  document.getElementById("memberProgress").innerHTML = ["1","2"].map(grp=>`
+    <div style="margin-bottom:12px">
+      <div style="font-weight:700;font-size:13px;padding:6px 10px;background:#e0e7ff;border-radius:8px;margin-bottom:7px;color:#3730a3">குழு ${grp}</div>
+      ${MEMBERS.filter(m=>m.group===grp).map(m=>{
+        const pms = MONTHS.filter(mo=>payments[`${m.id}_${mo.m}`]).length;
+        const pct = Math.round(pms/11*100);
+        const totalPaid = MONTHS.filter(mo=>payments[`${m.id}_${mo.m}`]).reduce((s,mo)=>s+mo.inst,0);
+        return `
+          <div class="mem-row" style="border-left-color:${pct===100?"#059669":"#3b82f6"}">
+            <div class="mem-avatar">${m.name[0]}</div>
+            <div style="flex:1">
+              <div class="mem-name">${m.name}</div>
+              <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${pct===100?"#059669":"#3b82f6"}"></div></div>
+              <div style="font-size:10px;color:#9ca3af">${pms}/11 மாதம் • ${INR(totalPaid)}</div>
+            </div>
+            <div style="font-size:13px;font-weight:800;color:${pct===100?"#059669":"#3b82f6"};margin-left:8px">${pct}%</div>
+          </div>`;
+      }).join("")}
+    </div>`).join("");
+
+  // Grid
+  const minW = (2 + 1 + 11) * 28;
+  document.getElementById("statusGrid").style.minWidth = minW+"px";
+  document.getElementById("statusGrid").innerHTML = `
+    <div class="sgrid-head">
+      <div style="text-align:left;padding-left:6px">பெயர்</div>
+      <div>கு</div>
+      ${MONTHS.map(m=>`<div>${m.m}</div>`).join("")}
+    </div>
+    ${MEMBERS.map(m=>`
+      <div class="sgrid-row">
+        <div class="sgrid-cell" style="font-size:10px;font-weight:600;justify-content:flex-start;padding-left:6px">${m.name.split(" ")[0]}</div>
+        <div class="sgrid-cell" style="color:#6b7280">${m.group}</div>
+        ${MONTHS.map(mo=>{
+          const p=payments[`${m.id}_${mo.m}`];
+          return `<div class="sgrid-cell ${p?"paid":"pend"}">${p?"✓":"—"}</div>`;
+        }).join("")}
+      </div>`).join("")}`;
+}
+
+// ── RENDER WINNERS ─────────────────────────────────────────────────────────
+function renderWinners() {
+  const monSel = document.getElementById("winMonSel");
+  const memSel = document.getElementById("winMemSel");
+  if (monSel.options.length<=1) {
+    MONTHS.forEach(m=>{
+      const o=document.createElement("option");
+      o.value=m.m; o.textContent=`${m.label} — ${INR(m.prize)}${m.temple?" 🛕":""}`;
+      monSel.appendChild(o);
+    });
+  }
+  if (memSel.options.length<=1) {
+    MEMBERS.forEach(m=>{
+      const o=document.createElement("option");
+      o.value=m.id; o.textContent=`${m.name} (குழு ${m.group})`;
+      memSel.appendChild(o);
+    });
+  }
+
+  document.getElementById("winnersList").innerHTML = MONTHS.map(m=>{
+    const w=winners[m.m];
+    const isTemple=m.temple&&!w;
+    return `
+      <div class="win-row ${w?"has-winner":""}" ${w?`onclick="openWinnerModal(${m.m})" style="cursor:pointer"`:""}>
+        <div style="width:30px;height:30px;border-radius:8px;background:${w?"#fef3c7":isTemple?"#fce7f3":"#f9fafb"};display:flex;align-items:center;justify-content:center;font-size:15px;margin-right:10px;flex-shrink:0">${w?"🏆":isTemple?"🛕":"—"}</div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:12px">${m.label}</div>
+          <div style="font-size:11px;color:${w?"#92400e":isTemple?"#9d174d":"#9ca3af"}">${w?w.name:isTemple?"கோவிலுக்கு (Default)":"இன்னும் அறிவிக்கவில்லை"}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:13px;font-weight:700;color:${w?"#059669":"#d1d5db"}">${INR(m.prize)}</div>
+          ${w?`<div style="font-size:9px;color:#f59e0b">குழு ${w.grp}</div>`:""}
+        </div>
+      </div>`;
+  }).join("");
+}
+
+// ── RENDER REMINDER ────────────────────────────────────────────────────────
+function renderReminder() {
+  const mdata  = md();
+  const dl     = daysLeft();
+  const urgent = dl<=1, warn=dl<=5;
+  const pending= MEMBERS.filter(m=>!payments[`${m.id}_${curMonth}`]);
+
+  // Big countdown
+  document.getElementById("bigCountdown").innerHTML = `
+    <div style="font-size:60px;font-weight:900;color:${urgent?"#dc2626":warn?"#d97706":"#059669"};line-height:1" class="${warn?"pulse":""}">${urgent?0:dl}</div>
+    <div style="font-size:13px;font-weight:700;margin-top:4px">நாட்கள் மீதம்</div>
+    <div style="font-size:11px;color:#6b7280;margin-top:2px">${urgent?"🚨 இன்று கடைசி நாள்!":"5ஆம் தேதி கட்டாயம்"}</div>
+    <div style="margin-top:10px;display:inline-block;background:rgba(0,0,0,.05);border-radius:10px;padding:7px 16px">
+      <span style="font-size:13px;font-weight:700">${mdata.label} — ${INR(mdata.inst)}</span>
+    </div>`;
+
+  // Messages
+  const msgs = {
+    general: `🏦 *வெண்ணு சிட்டு* — ${mdata.label}\n\n💵 தவணை: ${INR(mdata.inst)}\n⏰ ${urgent?"🚨 இன்று கடைசி நாள்!":dl+" நாட்கள் மீதம்"}\n📅 5ஆம் தேதி கடைசி\n\n${urgent?"உடனே செலுத்துங்கள்! 🙏":"சரியான நேரத்தில் செலுத்துங்கள்.\nநன்றி 🙏"}`,
+    pending: pending.length===0
+      ? "✅ அனைவரும் செலுத்திவிட்டனர்!\nநன்றி 🙏"
+      : `🔔 *வெண்ணு சிட்டு — நிலுவை*\n\n${mdata.label} — ${INR(mdata.inst)}\n\nயாரேனும் செலுத்தவில்லை (${pending.length} பேர்):\n${pending.map((m,i)=>`${i+1}. ${m.name} (குழு ${m.group})`).join("\n")}\n\n${urgent?"🚨 இன்று கடைசி நாள்!":`⏰ ${dl} நாட்கள் மட்டுமே மீதம்`}\nஉடனே செலுத்துங்கள். நன்றி 🙏`,
+    final: `🚨 *வெண்ணு சிட்டு — கடைசி நினைவூட்டல்*\n\n${mdata.label} — ${INR(mdata.inst)}\n\n⛔ இன்று கடைசி நாள்!\n\nயாரேனும் செலுத்தாதவர்கள்:\n${pending.length===0?"✅ அனைவரும் செலுத்திவிட்டனர்!":pending.map((m,i)=>`${i+1}. ${m.name}`).join("\n")}\n\nதாமதமின்றி செலுத்துங்கள்.\nநன்றி 🙏`
+  };
+  const titles = { general:"📢 பொது நினைவூட்டல்", pending:`⏳ நிலுவை நினைவூட்டல் (${pending.length} பேர்)`, final:"🚨 கடைசி நினைவூட்டல்" };
+  document.getElementById("remMsgTitle").textContent = titles[remTab];
+  document.getElementById("remMsgBox").textContent   = msgs[remTab];
+
+  // Pending list
+  const plEl = document.getElementById("pendingRemList");
+  if (pending.length>0) {
+    plEl.innerHTML = `
+      <div class="section-title" style="margin-top:4px">📱 தனிப்பட்ட நினைவூட்டல் (${pending.length} பேர்)</div>
+      ${pending.map(m=>`
+        <div class="mem-row pending">
+          <div class="mem-avatar" style="background:linear-gradient(135deg,#ef4444,#f97316)">${m.name[0]}</div>
+          <div style="flex:1">
+            <div class="mem-name">${m.name}</div>
+            <div class="mem-sub">குழு ${m.group}</div>
+          </div>
+          <a class="btn-wa" href="https://wa.me/?text=${encodeURIComponent(`நமஸ்காரம் ${m.name}! வெண்ணு சிட்டு ${mdata.label} தவணை ${INR(mdata.inst)} செலுத்த வேண்டுகிறோம். நன்றி 🙏`)}" target="_blank">📱 WA</a>
+        </div>`).join("")}`;
+  } else {
+    plEl.innerHTML = `<div class="card" style="text-align:center;color:#059669;font-weight:700;padding:16px">✅ அனைவரும் செலுத்திவிட்டனர்!</div>`;
+  }
+}
+
+// ── INIT ────────────────────────────────────────────────────────────────────
+loadFromFirebase();
+
+</script>
+</body>
+</html>
 
