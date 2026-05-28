@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head><title>KMBSC G2 Seed</title></head>
+<body>
+<h2>Seeding Group 2 payments...</h2>
+<div id="log"></div>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyBVGVu59jDZybPFAX_pRisSrQRoXHQ0EWY",
+  databaseURL:"https://kmbsc-chit-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"kmbsc-chit"
+});
+var db = firebase.database();
+
+var g2 = {
+  m1:"Deena", m2:"Rajamurugan & Suganthi", m3:"Vijaya Chithi",
+  m4:"K. Balaji", m5:"Selvam Anna", m6:"Sudhakar",
+  m7:"Ragu Anna", m8:"Krishnakumari Chithi", m9:"Vishwam Mama",
+  m10:"Ramesh/Nagaraj Chithappa"
+};
+var amounts = {1:10000,2:7500,3:7600,4:7700,5:7800};
+var dates = {
+  1:["10/1/2026","8/1/2026","12/1/2026","5/1/2026","15/1/2026","7/1/2026","9/1/2026","11/1/2026","14/1/2026","6/1/2026"],
+  2:["8/2/2026","5/2/2026","10/2/2026","7/2/2026","12/2/2026","9/2/2026","6/2/2026","11/2/2026","13/2/2026","4/2/2026"],
+  3:["9/3/2026","7/3/2026","11/3/2026","5/3/2026","14/3/2026","8/3/2026","10/3/2026","12/3/2026","15/3/2026","6/3/2026"],
+  4:["7/4/2026","5/4/2026","10/4/2026","9/4/2026","12/4/2026","8/4/2026","11/4/2026","14/4/2026","15/4/2026","6/4/2026"],
+  5:["16/5/2026","6/5/2026","12/5/2026","10/5/2026","8/5/2026","20/5/2026","7/5/2026","19/5/2026","17/5/2026","16/5/2026"]
+};
+
+var payments = {};
+Object.keys(g2).forEach(function(mid, idx) {
+  for(var mon = 1; mon <= 5; mon++) {
+    payments["g2_"+mid+"_"+mon] = {
+      date: dates[mon][idx],
+      amt: amounts[mon],
+      name: g2[mid]
+    };
+  }
+});
+
+db.ref("venue_chit/payments").update(payments, function(err) {
+  document.getElementById("log").innerHTML = err
+    ? "<h3 style='color:red'>ERROR: "+err+"</h3>"
+    : "<h3 style='color:green'>✅ Done! "+Object.keys(payments).length+" Group 2 payments saved!</h3><p>Close this tab and open the app.</p>";
+});
+</script>
+</body>
+</html>
