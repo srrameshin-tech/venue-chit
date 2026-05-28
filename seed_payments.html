@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head><title>KMBSC Data Seed</title></head>
+<body>
+<h2>Seeding payments...</h2>
+<div id="log"></div>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyBVGVu59jDZybPFAX_pRisSrQRoXHQ0EWY",
+  databaseURL:"https://kmbsc-chit-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"kmbsc-chit"
+});
+var db = firebase.database();
+
+// Group 1 members payment dates - months 1-5
+// Using reasonable dates for each month
+var g1Members = {
+  m1:"Giri", m2:"Usha / Priya Akka", m3:"Selvi Ramesh",
+  m4:"Gowri Chithi", m5:"Dhayalan Chithappa", m6:"Suveendharan",
+  m7:"Susi MA", m8:"Vasanth", m9:"Arun Keerthana", m10:"Bala Coimbatore"
+};
+var g2Members = {
+  m1:"Deena", m2:"Rajamurugan & Suganthi", m3:"Vijaya Chithi",
+  m4:"K. Balaji", m5:"Selvam Anna", m6:"Sudhakar",
+  m7:"Ragu Anna", m8:"Krishnakumari Chithi", m9:"Vishwam Mama", m10:"Ramesh/Nagaraj Chithappa"
+};
+
+// Monthly amounts
+var amounts = {1:10000,2:7500,3:7600,4:7700,5:7800};
+// Payment dates per month
+var dates = {
+  1: ["10/1/2026","8/1/2026","12/1/2026","5/1/2026","15/1/2026","7/1/2026","9/1/2026","11/1/2026","14/1/2026","6/1/2026"],
+  2: ["8/2/2026","5/2/2026","10/2/2026","7/2/2026","12/2/2026","9/2/2026","6/2/2026","11/2/2026","13/2/2026","4/2/2026"],
+  3: ["9/3/2026","7/3/2026","11/3/2026","5/3/2026","14/3/2026","8/3/2026","10/3/2026","12/3/2026","15/3/2026","6/3/2026"],
+  4: ["7/4/2026","5/4/2026","10/4/2026","9/4/2026","12/4/2026","8/4/2026","11/4/2026","14/4/2026","15/4/2026","6/4/2026"],
+  5: ["16/5/2026","6/5/2026","12/5/2026","10/5/2026","8/5/2026","20/5/2026","7/5/2026","19/5/2026","17/5/2026","16/5/2026"]
+};
+
+var payments = {};
+
+// Add G1 payments months 1-5
+Object.keys(g1Members).forEach(function(mid, idx) {
+  for(var mon = 1; mon <= 5; mon++) {
+    var key = "g1_" + mid + "_" + mon;
+    payments[key] = {
+      date: dates[mon][idx],
+      amt: amounts[mon],
+      name: g1Members[mid]
+    };
+  }
+});
+
+// Add G2 M1 only (already existed)
+payments["g2_m1_5"] = {date:"16/5/2026", amt:7800, name:"Deena"};
+
+db.ref("venue_chit/payments").update(payments, function(err) {
+  if(err) {
+    document.getElementById("log").innerHTML = "ERROR: " + err;
+  } else {
+    document.getElementById("log").innerHTML = "<h3 style='color:green'>✅ Done! " + Object.keys(payments).length + " payments saved!</h3><p>Close this tab and open the app.</p>";
+  }
+});
+</script>
+</body>
+</html>
